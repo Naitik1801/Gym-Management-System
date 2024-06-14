@@ -5,7 +5,9 @@ import { State, City } from 'country-state-city';
 
 const AddressModal = ({ setAddress }, { address }) => {
     const changeAddress = (a) => {
-        setAddress(a)
+        if(a.addresstype && a.state && a.city && a.flat && a.pin) {
+            setAddress(JSON.stringify(a));
+        }
     }
     const addressTypeOptions = [
         { value: 'billing', label: 'Billing Address' },
@@ -14,11 +16,12 @@ const AddressModal = ({ setAddress }, { address }) => {
         { value: 'staff', label: 'Staff Address' },
     ];
 
-    const [selectedState, setSelectedState] = useState('');
-    const [selectedCity, setSelectedCity] = useState('');
-    const [selectedFlat, setSelectedFlat] = useState('');
-    const [selectedArea, setSelectedArea] = useState('');
-    const [selectedPin, setSelectedPin] = useState('');
+    const [addressType, setAddressType] = useState(null);
+    const [selectedState, setSelectedState] = useState(null);
+    const [selectedCity, setSelectedCity] = useState(null);
+    const [selectedFlat, setSelectedFlat] = useState(null);
+    const [selectedArea, setSelectedArea] = useState(null);
+    const [selectedPin, setSelectedPin] = useState(null);
 
     const stateOptions = State.getStatesOfCountry('IN').map((state) => ({
         value: state.isoCode,
@@ -44,7 +47,7 @@ const AddressModal = ({ setAddress }, { address }) => {
                         <>
                             <div className="mb-3">
                                 <label htmlFor="addressType" className="form-label">Address Type<span className="text-danger">*</span></label>
-                                <Select id="addressType" options={addressTypeOptions} placeholder="Select Address Type" />
+                                <Select id="addressType" options={addressTypeOptions} placeholder="Select Address Type" onChange={setAddressType}/>
                             </div>
                             <div className="mb-3">
                                 <label htmlFor="state" className="form-label">State<span className="text-danger">*</span></label>
@@ -81,7 +84,7 @@ const AddressModal = ({ setAddress }, { address }) => {
                     </div>
                     <div className="modal-footer">
                         <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="button" className="btn btn-primary" onClick={() => changeAddress(selectedFlat + ", " + selectedArea + ", " + selectedCity.value + ", " + selectedState.value + " - " + selectedPin)}>Save changes</button>
+                        <button type="button" className="btn btn-primary" data-bs-dismiss="modal" onClick={() => changeAddress({addresstype: addressType, state: selectedState, city: selectedCity, flat: selectedFlat, area: selectedArea, pin: selectedPin})}>Save changes</button>
                     </div>
                 </div>
             </div>
