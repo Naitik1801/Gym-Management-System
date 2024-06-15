@@ -3,9 +3,8 @@ import Select from 'react-select';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min';
 import AddressModal from './AddressModal';
-import'./Form.css' 
 
-function Form() {
+function MemberForm() {
 
     const [firstname, setFirstName] = useState('');
     const [lastname, setLastName] = useState('');
@@ -17,8 +16,9 @@ function Form() {
     const [emergencymobile, setEmergencyMobile] = useState('');
     const [emergencyrelation, setEmergencyRelation] = useState('');
     const [birthdate, setBirthDate] = useState('');
-    const [joindate, setJoinDate] = useState('');
+    const [joiningdate, setJoiningDate] = useState('');
     const [bloodgroup, setBloodGroup] = useState('');
+    const [document, setDocument] = useState('');
 
     const documentOptions = [
         { value: 'aadhar', label: 'Aadhar Card' },
@@ -55,6 +55,32 @@ function Form() {
         { value: 'friend', label: 'Friend' }
     ];
 
+    const [errors, setErrors] = useState({});
+
+    const validateFields = () => {
+        const newErrors = {};
+        if (!firstname) newErrors.firstname = 'First name is required';
+        if (!lastname) newErrors.lastname = 'Last name is required';
+        if (!aadharcard) newErrors.aadharcard = 'Aadhaar card number is required';
+        if (!emergencyrelation) newErrors.emergencyrelation = 'Emergency relation is required';
+        if (!birthdate) newErrors.birthdate = 'Birthdate is required';
+        if (!joiningdate) newErrors.joiningdate = 'Joining date is required';
+        if (!gender) newErrors.gender = 'Gender is required';
+        if (!address) newErrors.address = 'Address is required';
+        if (!document) newErrors.document = 'Document is required';
+        return newErrors;
+    };
+
+    const handleSubmit = () => {
+        const validationErrors = validateFields();
+        if (Object.keys(validationErrors).length > 0) {
+            setErrors(validationErrors);
+        } else {
+            console.log(firstname, lastname, aadharcard, mobilenumber, emergencymobile, emergencyrelation, email, birthdate, joiningdate, bloodgroup, gender, address, document);
+            setErrors({});
+        }
+    };
+
     return (
         <div className='container-fluid' >
             <div className="container">
@@ -64,7 +90,7 @@ function Form() {
                         <h1 className="ml-3">Member</h1>
                     </div>
                     <button className="btn btn-secondary" disabled>Disabled</button>
-                    <button className="btn btn-primary ms-2" onClick={() => console.log(firstname, lastname, aadharcard, mobilenumber, emergencymobile, emergencyrelation, email, birthdate, joindate, bloodgroup, gender, address)}>Submit</button>
+                    <button className="btn btn-primary ms-2" onClick={handleSubmit}>Submit</button>
                 </div>
 
                 <hr />
@@ -72,7 +98,7 @@ function Form() {
                 <div className="d-flex mb-3 align-items-center justify-content-between">
                     <div id="upload" className="me-auto position-relative">
                         <img src="https://gymxfit.gymxfit.com/assets/images/profile.svg" alt="Profile" className="image" height="150px" />
-                        <button type="button" className="btn btn-primary d-inline-flex align-items-center position-absolute top-0 start-100 translate-middle badge border border-2 border-white rounded" style={{padding: "5px"}}>
+                        <button type="button" className="btn btn-primary d-inline-flex align-items-center position-absolute top-0 start-100 translate-middle badge border border-2 border-white rounded" style={{ padding: "5px" }}>
                             <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
                                 <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z" />
                                 <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z" />
@@ -106,14 +132,17 @@ function Form() {
                     <div className="form-group col-md-4">
                         <label htmlFor="firstName">First Name</label>
                         <input type="text" className="form-control" id="firstName" placeholder="Enter First Name" value={firstname} onChange={(e) => setFirstName(e.target.value)} />
+                        {errors.firstname && <div className="text-danger text-end">{errors.firstname}</div>}
                     </div>
                     <div className="form-group col-md-4">
                         <label htmlFor="lastName">Last Name</label>
                         <input type="text" className="form-control" id="lastName" placeholder="Enter Last Name" value={lastname} onChange={(e) => setLastName(e.target.value)} />
+                        {errors.lastname && <div className="text-danger text-end">{errors.lastname}</div>}
                     </div>
                     <div className="form-group col-md-4">
                         <label htmlFor="aadhaarNumber">Aadhaar Card Number</label>
                         <input type="text" className="form-control" id="aadhaarNumber" placeholder="Enter Aadhaar Card Number" value={aadharcard} onChange={(e) => setAadharCard(e.target.value)} />
+                        {errors.aadharcard && <div className="text-danger text-end">{errors.aadharcard}</div>}
                     </div>
                 </div>
 
@@ -134,6 +163,7 @@ function Form() {
                             placeholder="Select Emergency Relation"
                             onChange={setEmergencyRelation}
                         />
+                        {errors.emergencyrelation && <div className="text-danger text-end">{errors.emergencyrelation}</div>}
                     </div>
                 </div>
 
@@ -143,12 +173,14 @@ function Form() {
                         <input type="email" className="form-control" id="email" placeholder="Enter Email" value={email} onChange={(e) => setEmail(e.target.value)} />
                     </div>
                     <div className="form-group col-md-4">
-                        <label htmlFor="birthdate">Birthdate</label>
-                        <input type="date" className="form-control" id="birthdate" value={birthdate} onChange={(e) => setBirthDate(e.target.value)} />
+                        <label htmlFor="birthDate">Birthdate</label>
+                        <input type="date" className="form-control" id="birthDate" value={birthdate} onChange={(e) => setBirthDate(e.target.value)} />
+                        {errors.birthdate && <div className="text-danger text-end">{errors.birthdate}</div>}
                     </div>
                     <div className="form-group col-md-4">
                         <label htmlFor="joiningDate">Joining Date</label>
-                        <input type="date" className="form-control" id="joiningDate" value={joindate} onChange={(e) => setJoinDate(e.target.value)} />
+                        <input type="date" className="form-control" id="joiningDate" value={joiningdate} onChange={(e) => setJoiningDate(e.target.value)} />
+                        {errors.joiningdate && <div className="text-danger text-end">{errors.joiningdate}</div>}
                     </div>
                 </div>
 
@@ -178,6 +210,7 @@ function Form() {
                                 <label className="form-check-label" htmlFor="other">Other</label>
                             </div>
                         </div>
+                        {errors.gender && <div className="text-danger text-end">{errors.gender}</div>}
                     </div>
                     <div className="form-group col-md-4 mb-2">
                         <label htmlFor="address">Address</label>
@@ -190,6 +223,7 @@ function Form() {
                             <div>
                                 <button type="button" className="btn btn-primary btn-block" data-bs-toggle="modal" data-bs-target="#addressModal">Set Address</button>
                             </div>}
+                        {errors.address && <div className="text-danger text-end">{errors.address}</div>}
                     </div>
                     <AddressModal
                         setAddress={setAddress}
@@ -211,7 +245,9 @@ function Form() {
                             id="document-select"
                             placeholder="Select document type"
                             options={documentOptions}
+                            onChange={setDocument}
                         />
+                        {errors.document && <div className="text-danger text-end">{errors.document}</div>}
                     </div>
                 </div>
 
@@ -221,4 +257,4 @@ function Form() {
     );
 }
 
-export default Form;
+export default MemberForm;
